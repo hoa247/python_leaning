@@ -1,0 +1,5 @@
+print('Nhập a: ')
+a = int(input())
+print('Nhập b: ')
+b = int(input())
+print('Kết quả: a + b = ' + str (a + b))
