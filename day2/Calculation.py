@@ -1,6 +1,6 @@
 from tkinter import *
 
-class Caculation():
+class Calculation():
     def __init__(self):
         self.root = Tk()
         self.inputFrame = LabelFrame(self.root, text="Input")
@@ -89,5 +89,6 @@ class Caculation():
         self.input1Value.set('')
         self.input2Value.set('')
 
-caculation = Caculation()
-caculation.root.mainloop()
+calculation = Calculation()
+calculation.root.title('Calculation')
+calculation.root.mainloop()
