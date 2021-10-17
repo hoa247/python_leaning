@@ -1,4 +1,6 @@
+from tkinter import *
 import os
-print(os.listdir(os.getcwd()))
-# path = os.getcwd()
-# print(path)
+
+class FileHelper():
+    def __init__(self):
+        
