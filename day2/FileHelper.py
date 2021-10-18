@@ -14,10 +14,10 @@ class FileHelper():
         self.filesInFolderFrame = LabelFrame(self.root, text="Files")
         self.filesInFolderFrame.grid( row=0, column=1, sticky=N+S+W+E, padx=5, pady=5)
         
-        self.files = [1,2];
         self.filesScrollbar = Scrollbar(self.filesInFolderFrame)
-        self.filesScrollbar.pack(side=RIGHT, fill=Y)
-        self.loadScroll(self.files)
+        self.filesListBox = Listbox(self.filesInFolderFrame, yscrollcommand=self.filesScrollbar)
+        self.files = [];
+        self.loadScroll()
 
         #inputFolderFrame #inputFolderType
         self.inputFolderType = StringVar(None, 'choose')
@@ -55,25 +55,28 @@ class FileHelper():
         self.folder = filedialog.askdirectory()
         if (not self.folder):
             return print('not choose folder')
-        print("You choose:" + self.folder)
+        self.loadScroll(1)
     
     def enterFolder(self):
-        self.loadScroll([3,6])
-
         self.folder = self.inputFolderEnterEntry.get()
         if not os.path.isdir(self.folder):
             return messagebox.showerror("Warning", "Folder does not exist!")
-        print(self.folder)
+        self.loadScroll(1)
 
-    def loadScroll(self, files):
-        
-        self.filesListBox = Listbox(
-        self.filesInFolderFrame, yscrollcommand=self.filesScrollbar)
-        for file in files:
+    def loadScroll(self, loadFiles = 0):
+        if loadFiles:
+            self.files = os.listdir(self.folder)
+        self.filesListBox.delete(0, END)
+        lengMax = 0
+        for file in self.files:
+            if len(file) > lengMax:
+                lengMax = len(file)
             self.filesListBox.insert(END, file)
-
-        self.filesListBox.pack(side=LEFT, fill=BOTH)
-        self.filesScrollbar.config(command=self.filesListBox.yview)
+        
+        if lengMax != 0:
+            self.filesListBox.config(width=(lengMax + 2))
+        self.filesListBox.grid(row=0, column=1, sticky=N+S+W+E, padx=5, pady=5)
+       
 
 
 
