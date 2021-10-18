@@ -12,19 +12,15 @@ class Calculation():
         self.label1 = Label(self.inputFrame, text="Number 1:")
         self.label1.grid(row=0, column=0)
 
-        self.input1Value = StringVar()
-
-        self.input1 = Entry(self.inputFrame, width=25,
-                            textvariable=self.input1Value)
+        self.input1 = Entry(self.inputFrame, width=25)
         self.input1.grid(row=0, column=1)
         self.inputFrame.grid(row=0, column=0, padx=5)
 
         self.label2 = Label(self.inputFrame, text="Number 2:")
         self.label2.grid(row=1, column=0)
 
-        self.input2Value = StringVar()
-        self.input2 = Entry(self.inputFrame, width=25,
-                            textvariable=self.input2Value)
+
+        self.input2 = Entry(self.inputFrame, width=25)
         self.input2.grid(row=1, column=1, padx=5)
 
         self.calculateBtn = Button(self.inputFrame, text='Calculate',
@@ -85,9 +81,9 @@ class Calculation():
         return self.result.set(eval(f'{input1} {operater} {input2}'))
 
     def clear(self):
+        self.input1.delete(0, END)
+        self.input2.delete(0, END)
         self.result.set('cleared!')
-        self.input1Value.set('')
-        self.input2Value.set('')
 
 calculation = Calculation()
 calculation.root.title('Calculation')
