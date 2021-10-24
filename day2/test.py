@@ -1,33 +1,14 @@
 from tkinter import *
+master = Tk()
 
-class Application(Frame):
-    def __init__(self,  master=None):
-        Frame.__init__(self, master)
-        self.grid(sticky=N+S+E+W)
-        self.mainframe()
+def var_states():
+   print("male: %d,\nfemale: %d" % (var1.get(), var2.get()))
 
-    def mainframe(self):
-        self.data = Listbox(self, bg='red')
-        self.scrollbar = Scrollbar(self.data, orient=VERTICAL)
-        self.data.config(yscrollcommand=self.scrollbar.set)
-        self.scrollbar.config(command=self.data.yview)
-
-        for i in range(1000):
-            self.data.insert(END, str(i))
-
-        self.run = Button(self, text="run")
-        self.stop = Button(self, text="stop")
-
-        self.data.grid(row=0, column=0, rowspan=4,
-                       columnspan=2, sticky=N+E+S+W)
-        self.data.columnconfigure(0, weight=1)
-
-        self.run.grid(row=4, column=0, sticky=EW)
-        self.stop.grid(row=4, column=1, sticky=EW)
-
-        self.scrollbar.grid(column=2, sticky=N+S)
-
-
-a = Application()
-a.mainframe()
-a.mainloop()
+Label(master, text="Your sex:").grid(row=0, sticky=W)
+var1 = IntVar()
+Checkbutton(master, command=var_states, text="male", variable=var1).grid(row=1, sticky=W)
+var2 = IntVar()
+Checkbutton(master, command=var_states, text="female", variable=var2).grid(row=2, sticky=W)
+Button(master, text='Quit', command=master.quit).grid(row=3, sticky=W, pady=4)
+Button(master, text='Show', command=var_states).grid(row=4, sticky=W, pady=4)
+mainloop()
