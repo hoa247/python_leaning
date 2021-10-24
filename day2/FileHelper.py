@@ -7,10 +7,12 @@ class FileHelper():
         self.root = Tk()
 
         #inputFolderFrame
-        self.inputFolderFrame = LabelFrame(self.root, text="Input folder").grid(row=0, column=0, sticky=N+S+W+E, padx=5, pady=5)
+        self.inputFolderFrame = LabelFrame(self.root, text="Input folder")
+        self.inputFolderFrame.grid(row=0, column=0, sticky=N+S+W+E, padx=5, pady=5)
 
         #files in folder Frame
-        self.filesInFolderFrame = LabelFrame(self.root, text="Files").grid( row=0, column=1, sticky=N+S+W+E, padx=5, pady=5)
+        self.filesInFolderFrame = LabelFrame(self.root, text="Files")
+        self.filesInFolderFrame.grid( row=0, column=1, sticky=N+S+W+E, padx=5, pady=5)
         
         self.filesScrollbar = Scrollbar(self.filesInFolderFrame)
         self.filesListBox = Listbox(self.filesInFolderFrame, yscrollcommand=self.filesScrollbar)
@@ -20,17 +22,20 @@ class FileHelper():
         #inputFolderFrame #inputFolderType
         self.inputFolderType = StringVar(None, 'choose')
         self.inputFolderRadio1 = Radiobutton(self.inputFolderFrame, text="Choose", variable=self.inputFolderType, command=self.inputFolderTypeHandel, value='choose')
-                                .grid(row=0, column=0)
+        self.inputFolderRadio1.grid(row=0, column=0)
         self.inputFolderRadio2 = Radiobutton(self.inputFolderFrame, text="Enter", variable=self.inputFolderType, command=self.inputFolderTypeHandel, value='enter')
-                                .grid(row=0, column=1, padx=(20, 5))
+        self.inputFolderRadio2.grid(row=0, column=1, padx=(20, 5))
 
         #inputFolderFrame #inputFolderType #chooseBtn
-        self.inputFolderChooseBtn = Button(self.inputFolderFrame, text="choose", command=self.chooseFolder).grid(row=1, column=0, padx=5, pady=5, sticky=W+E)
+        self.inputFolderChooseBtn = Button(self.inputFolderFrame, text="choose", command=self.chooseFolder)
+        self.inputFolderChooseBtn.grid(row=1, column=0, padx=5, pady=5, sticky=W+E)
         
         #inputFolderFrame #inputFolderType #enter frame
         self.enterFrame = LabelFrame(self.inputFolderFrame, borderwidth=0)
-        self.inputFolderEnterEntry = Entry(self.enterFrame).grid(row=1, column=0, columnspan=2, padx=5, sticky=W+E)
-        self.inputFolderEnterBtn = Button( self.enterFrame, text="enter", command=self.enterFolder).grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky=W+E)
+        self.inputFolderEnterEntry = Entry(self.enterFrame)
+        self.inputFolderEnterEntry.grid(row=1, column=0, columnspan=2, padx=5, sticky=W+E)
+        self.inputFolderEnterBtn = Button( self.enterFrame, text="enter", command=self.enterFolder)
+        self.inputFolderEnterBtn.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky=W+E)
     
     def inputFolderTypeHandel(self):
         inputFolderType = self.inputFolderType.get()
@@ -67,9 +72,6 @@ class FileHelper():
         if lengMax != 0:
             self.filesListBox.config(width=(lengMax + 2))
         self.filesListBox.grid(row=0, column=1, sticky=N+S+W+E, padx=5, pady=5)
-       
-
-
 
 fileHelper = FileHelper()
 
