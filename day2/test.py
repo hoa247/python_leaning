@@ -1,14 +1,16 @@
 from tkinter import *
-master = Tk()
+from tkinter import scrolledtext
 
-def var_states():
-   print("male: %d,\nfemale: %d" % (var1.get(), var2.get()))
 
-Label(master, text="Your sex:").grid(row=0, sticky=W)
-var1 = IntVar()
-Checkbutton(master, command=var_states, text="male", variable=var1).grid(row=1, sticky=W)
-var2 = IntVar()
-Checkbutton(master, command=var_states, text="female", variable=var2).grid(row=2, sticky=W)
-Button(master, text='Quit', command=master.quit).grid(row=3, sticky=W, pady=4)
-Button(master, text='Show', command=var_states).grid(row=4, sticky=W, pady=4)
-mainloop()
+root = Tk()
+
+
+scroll_x = Scrollbar(root, orient="horizontal")
+text = scrolledtext.ScrolledText(root, wrap=NONE)
+
+text.config(xscrollcommand=scroll_x.set)
+scroll_x.configure(command=text.xview)
+text.pack(fill=X)
+scroll_x.pack(fill=X)
+
+root.mainloop()
