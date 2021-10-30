@@ -34,15 +34,19 @@ class FileHelper():
 
         #scroll Folder and file
         
-        self.childFoldersScrollbar = Scrollbar(self.childFoldersInFolderFrame)
-        self.childFoldersScrollbar.pack(side=RIGHT, fill=BOTH)
+        self.childFoldersScrollbarX = Scrollbar( self.childFoldersInFolderFrame, orient=HORIZONTAL)
+        self.childFoldersScrollbarY = Scrollbar(self.childFoldersInFolderFrame)
+        self.childFoldersScrollbarX.grid(row=1, column=0, sticky=N+S+E+W)
+        self.childFoldersScrollbarY.grid(row=0, column=1, sticky=N+S+E+W)
         self.childFoldersListBox = Listbox(self.childFoldersInFolderFrame)
-        self.childFoldersListBox.pack(side=LEFT, fill=BOTH)
+        self.childFoldersListBox.grid(row=0, column=0, sticky=N+S+E+W)
         
-        self.childFilesScrollbar = Scrollbar(self.childFilesInFolderFrame)
-        self.childFilesScrollbar.pack(side=RIGHT, fill=BOTH)
+        self.childFilesScrollbarX = Scrollbar(self.childFilesInFolderFrame,  orient=HORIZONTAL)
+        self.childFilesScrollbarY = Scrollbar(self.childFilesInFolderFrame)
+        self.childFilesScrollbarX.grid(row=1, column=0, sticky=N+S+E+W)
+        self.childFilesScrollbarY.grid(row=0, column=1, sticky=N+S+E+W)
         self.childFilesListBox = Listbox(self.childFilesInFolderFrame)
-        self.childFilesListBox.pack(side=LEFT, fill=BOTH)
+        self.childFilesListBox.grid(row=0, column=0, sticky=N+S+E+W)
         
         self.childs = []
         self.loadScroll()
@@ -104,29 +108,19 @@ class FileHelper():
         self.filteredChildFiles = []
         self.filter()
         
-        lengMaxFolder = 20
         for childFolder in self.filteredChildFolders:
-            if len(childFolder) > lengMaxFolder:
-                lengMaxFolder = len(childFolder)
             self.childFoldersListBox.insert(END, childFolder)
         
-        lengMaxFile = 20
         for childFile in self.filteredChildFiles:
-            if len(childFile) > lengMaxFile:
-                lengMaxFile = len(childFile)
             self.childFilesListBox.insert(END, childFile)
             
-        self.childFoldersListBox.config(width=(lengMaxFolder + 2))
-      
-            
-        if lengMaxFile != 0:
-            self.childFilesListBox.config(width=(lengMaxFile + 2))
-
-        self.childFoldersListBox.config(yscrollcommand=self.childFoldersScrollbar.set)
-        self.childFoldersScrollbar.config(command=self.childFoldersListBox.yview)
+        self.childFoldersListBox.config(xscrollcommand=self.childFoldersScrollbarX.set, yscrollcommand=self.childFoldersScrollbarY.set)
+        self.childFoldersScrollbarX.config(command=self.childFoldersListBox.xview)
+        self.childFoldersScrollbarY.config(command=self.childFoldersListBox.yview)
         
-        self.childFilesListBox.config(yscrollcommand=self.childFilesScrollbar.set)
-        self.childFilesScrollbar.config(command=self.childFilesListBox.yview)
+        self.childFilesListBox.config(xscrollcommand=self.childFilesScrollbarX.set, yscrollcommand=self.childFilesScrollbarY.set)
+        self.childFilesScrollbarX.config(command=self.childFilesListBox.xview)
+        self.childFilesScrollbarY.config(command=self.childFilesListBox.yview)
     
     def filter(self):
         isFile = self.fileCheckboxValue.get()

@@ -1,16 +1,31 @@
 from tkinter import *
-from tkinter import scrolledtext
 
 
-root = Tk()
+class DpWin(object):
+    def run(self):
+        root = Tk()
+        root.geometry('768x612')
+        title = 'dp'
+        root.title(title)
 
+        f = Frame(root)
+        f.pack()
 
-scroll_x = Scrollbar(root, orient="horizontal")
-text = scrolledtext.ScrolledText(root, wrap=NONE)
+        xscrollbar = Scrollbar(f, orient=HORIZONTAL)
+        xscrollbar.grid(row=1, column=0, sticky=N+S+E+W)
 
-text.config(xscrollcommand=scroll_x.set)
-scroll_x.configure(command=text.xview)
-text.pack(fill=X)
-scroll_x.pack(fill=X)
+        yscrollbar = Scrollbar(f)
+        yscrollbar.grid(row=0, column=1, sticky=N+S+E+W)
 
-root.mainloop()
+        text = Text(f, wrap=NONE, xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
+        text.grid(row=0, column=0)
+
+        xscrollbar.config(command=text.xview)
+        yscrollbar.config(command=text.yview)
+        for i in range(50):
+            text.insert(END, 'a'*999 + '\r\n')
+        mainloop()
+
+if __name__ == '__main__':
+    win = DpWin()
+    win.run()
