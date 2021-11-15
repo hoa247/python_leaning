@@ -14,22 +14,24 @@ class FileHelper():
         self.optionsFrame = LabelFrame(self.root, text="Options")
         self.optionsFrame.grid(row=0, column=1, sticky=N+S+W+E, padx=5, pady=5)
 
+        #actions Frame
+        self.actionsFrame = LabelFrame(self.root, text="Actions")
+        self.actionsFrame.grid(row=1, column=0, columnspan=2, sticky=N+S+W+E, padx=5, pady=5)
+
         #childs in folder Frame
         self.childFoldersInFolderFrame = LabelFrame(self.root, text="Folders")
-        self.childFoldersInFolderFrame.grid( row=1, column=0, sticky=N+S+W+E, padx=5, pady=5)
+        self.childFoldersInFolderFrame.grid( row=2, column=0, sticky=N+S+W+E, padx=5, pady=5)
         
         self.childFilesInFolderFrame = LabelFrame(self.root, text="Files")
-        self.childFilesInFolderFrame.grid(row=1, column=1, sticky=N+S+W+E, padx=5, pady=5)
+        self.childFilesInFolderFrame.grid(row=2, column=1, sticky=N+S+W+E, padx=5, pady=5)
         
         
         
         #checkbox file folder
         self.fileCheckboxValue = IntVar(None, 1)
-        Checkbutton(self.optionsFrame, text="File", command=self.handleFilterFileOrFolder,
-                    variable=self.fileCheckboxValue).grid(row=0, sticky=W)
+        Checkbutton(self.optionsFrame, text="File", command=self.handleFilterFileOrFolder, variable=self.fileCheckboxValue).grid(row=0, sticky=W)
         self.folderCheckboxValue = IntVar(None, 1)
-        Checkbutton(self.optionsFrame, text="Folder", command=self.handleFilterFileOrFolder,
-                    variable=self.folderCheckboxValue).grid(row=1, sticky=W)
+        Checkbutton(self.optionsFrame, text="Folder", command=self.handleFilterFileOrFolder, variable=self.folderCheckboxValue).grid(row=1, sticky=W)
         
         self.filterNameLabel = Label(self.optionsFrame, text="name")
         self.filterNameLabel.grid(row=2, column=0,sticky=W+E)
@@ -76,6 +78,132 @@ class FileHelper():
         self.inputFolderEnterBtn = Button(self.enterFrame, text="enter", command=self.enterFolder)
         self.inputFolderEnterBtn.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky=W+E)
         
+        #actions Frame #Delimiter
+        self.delimiterLabel = Label(self.actionsFrame, text="Delimiter")
+        self.delimiterLabel.grid(row=0, column=0, sticky=W)
+        
+        self.delimiter = StringVar(None, '_')
+        self.inputFolderRadio1 = Radiobutton( self.actionsFrame, text="_(name_order)", variable=self.delimiter, command=self.delimiterHandel, value='_')
+        self.inputFolderRadio1.grid(row=1, column=0, sticky=W)
+        self.inputFolderRadio2 = Radiobutton( self.actionsFrame, text="-(name-order)", variable=self.delimiter, command=self.delimiterHandel, value='-')
+        self.inputFolderRadio2.grid(row=2, column=0, sticky=W)
+        self.inputFolderRadio2 = Radiobutton( self.actionsFrame, text="space(name order)", variable=self.delimiter, command=self.delimiterHandel, value=' ')
+        self.inputFolderRadio2.grid(row=3, column=0, sticky=W)
+        
+        #actions Frame #New name
+        self.newNameLabel = Label(self.actionsFrame, text="New name(*)")
+        self.newNameLabel.grid(row=4, column=0, sticky=W)
+        self.newNameEntry = Entry(self.actionsFrame)
+        self.newNameEntry.grid(row=5, column=0, padx=5, sticky=W+E)
+        
+        #actions Frame #Checkbutton New extension
+        self.changeExtensionValue = IntVar(None, 0)
+        Checkbutton(self.actionsFrame, text="Change extension", command=self.handleChangeExtensionValue,
+                    variable=self.changeExtensionValue).grid(row=6, sticky=W)
+
+        
+        #actions Frame #New extension
+        self.newExtensionFrame = LabelFrame(self.actionsFrame, borderwidth=0)
+        self.newExtensionLabel = Label( self.newExtensionFrame, text="New file extension")
+        self.newExtensionLabel.grid(row=0, column=0, sticky=W)
+        self.newExtensionEntry = Entry(self.newExtensionFrame)
+        self.newExtensionEntry.grid(row=1, column=0, padx=5, sticky=W+E)
+
+        #actions Frame #btn rename
+        self.renameBtn = Button(self.actionsFrame, text="rename folders", command=self.renameFolders)
+        self.renameBtn.grid(row=8, column=0, padx=3, pady=5, sticky=W)
+        self.renameBtn = Button( self.actionsFrame, text="rename files", command=self.renameFiles)
+        self.renameBtn.grid(row=8, column=2, padx=30, pady=5, sticky=E)
+
+    def handleChangeExtensionValue(self):
+        if (self.changeExtensionValue.get() == 1):
+            self.newExtensionFrame.grid(row=7, column=0, sticky=W)
+        else:
+            self.newExtensionFrame.grid_remove()
+
+    def validNewNameFormat(self, name):
+        notAllowedCharacters = ['/', '<', '>',
+                                ':', '"', '/', '\\', '|', '?', ' *']
+        for notAllowedCharacter in notAllowedCharacters:
+            if notAllowedCharacter in name:
+                messagebox.showerror("Warning", "Name must not include characters / <  >  :  \" / |  ? *")
+                return False
+        return True
+    
+    def validNewNameLength(self, name):
+        maxLength = 255
+        if (len(name) > maxLength):
+            messagebox.showerror( "Warning", "Name length must not greater than 255")
+            return False
+        if (len(name) == 0):
+            messagebox.showerror(
+                "Warning", "Please enter new name")
+            return False
+        return True
+        
+    
+    def renameFiles(self):
+        if (self.folder == 'root'):
+            return messagebox.showerror("Warning", "Can not rename in root folder")
+        newName = self.newNameEntry.get()
+        print()
+        if (not self.validNewNameFormat(newName) or not self.validNewNameLength(newName)):
+            return
+        answer = messagebox.askyesno(title='Confirmation', message='Are you sure that you want to rename FILES?')
+        if answer:
+            self.loadScroll()
+            try:
+                self.doRenameFiles(newName)
+            except Exception as e:
+                messagebox.showerror('Error', e)
+            self.filterNameEntry.delete(0, END)
+            self.loadScroll()
+            
+    def doRenameFiles(self, newName):
+        order = 1
+        delimiter = self.delimiter.get()
+        for childFile in self.filteredChildFiles:
+            fullPathFile = os.path.join(self.folder, childFile)
+            pathname, extension = os.path.splitext(fullPathFile)
+            if (self.changeExtensionValue.get() == 1):
+                extension = self.newExtensionEntry.get()
+            else:
+                extension = extension[1:]
+            newPathname = os.path.join( self.folder, newName) + delimiter + str(order)
+            if (extension):
+                os.rename(fullPathFile, newPathname + "." + extension)
+            else:
+                os.rename(fullPathFile, newPathname)
+            order += 1
+        return messagebox.showinfo("Info", "Rename " + str(order) + " files successfully")
+
+    def renameFolders(self):
+        if (self.folder == 'root'):
+            return messagebox.showerror( "Warning", "Can not rename in root folder")
+        newName = self.newNameEntry.get()
+        if (not self.validNewNameFormat(newName) or not self.validNewNameLength(newName)):
+            return
+        answer = messagebox.askyesno(
+            title='Confirmation', message='Are you sure that you want to rename FOLDERS?')
+        if answer:
+            self.loadScroll()
+            self.filterNameEntry.delete(0, END)
+            try:
+                self.doRenameFolders(newName)
+            except Exception as e:
+                messagebox.showerror('Error', e)
+            self.loadScroll()
+
+    def doRenameFolders(self, newName):
+        order = 1
+        delimiter = self.delimiter.get()
+        for childFolder in self.filteredChildFolders:
+            fullPathFolder = os.path.join(self.folder, childFolder)
+            newPathname = os.path.join(
+                self.folder, newName) + delimiter + str(order)
+            os.rename(fullPathFolder, newPathname)
+            order += 1
+        return messagebox.showinfo("Info", "Rename " + str(order) + " folders successfully")
 
     def handleFilterFileOrFolder(self):
         if self.folder:
@@ -113,7 +241,10 @@ class FileHelper():
             dl = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             self.childs = ['%s:/' % d for d in dl if os.path.exists('%s:' % d)]
         else:
-            self.childs = os.listdir(self.folder)
+            try:
+                self.childs = os.listdir(self.folder)
+            except Exception as e:
+                messagebox.showerror('Error', e)
             self.childFoldersListBox.insert(END, '../')
                 
         self.filteredChildFolders = []
@@ -163,6 +294,8 @@ class FileHelper():
             if (isFolder and os.path.isdir(path)) or self.folder == 'root':
                 self.filteredChildFolders.append(child)
 
+    def delimiterHandel(self):
+        print(self.delimiter)
 
 fileHelper = FileHelper()
 
